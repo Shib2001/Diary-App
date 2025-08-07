@@ -1,4 +1,5 @@
 import React, { useState, createContext } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient.js";
@@ -10,6 +11,7 @@ const Auth = ({ children }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [signupPending, setSignupPending] = useState(false);
   const [error, setError] = useState("");
@@ -153,7 +155,20 @@ const Auth = ({ children }) => {
       );
     }
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-yellow-100 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-amber-50 via-yellow-100 to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        {/* Glowing Title */}
+        <motion.h1
+          className="text-4xl font-extrabold mb-6 text-center text-amber-500 dark:text-yellow-200 tracking-wider select-none transition duration-300 hover:text-amber-400 hover:[text-shadow:0_0_16px_rgba(251,191,36,0.8)]"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          whileHover={{
+            scale: 1.04,
+            textShadow: "0px 0px 24px rgba(251,191,36,0.9)",
+          }}
+        >
+          My Diary
+        </motion.h1>
         <motion.form
           className="bg-white/80 dark:bg-gray-800/90 p-4 sm:p-8 rounded-2xl shadow-2xl w-full max-w-xs sm:max-w-sm flex flex-col gap-5 border border-amber-100 dark:border-gray-700"
           initial={{ opacity: 0, y: 40, scale: 0.97 }}
@@ -173,7 +188,8 @@ const Auth = ({ children }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white dark:bg-gray-900 font-semibold text-base shadow-sm transition-all duration-200"
+            className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white dark:bg-gray-900 font-semibold text-base shadow-sm transition-all duration-200 text-white placeholder-gray-400"
+            style={{ color: "white" }}
           />
           <input
             type="email"
@@ -181,16 +197,29 @@ const Auth = ({ children }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white dark:bg-gray-900 font-semibold text-base shadow-sm transition-all duration-200"
+            className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white dark:bg-gray-900 font-semibold text-base shadow-sm transition-all duration-200 text-white placeholder-gray-400"
+            style={{ color: "white" }}
           />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white dark:bg-gray-900 font-semibold text-base shadow-sm transition-all duration-200"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="px-4 py-2 rounded border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white dark:bg-gray-900 font-semibold text-base shadow-sm transition-all duration-200 text-white placeholder-gray-400 w-full pr-10"
+              style={{ color: "white" }}
+            />
+            <button
+              type="button"
+              tabIndex={-1}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-amber-500 focus:outline-none"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
           {error && (
             <motion.div
               className="text-red-500 text-sm text-center"
